@@ -1,0 +1,72 @@
+/**
+ * Copyright 2015, Symantec Corporation
+ * All rights reserved.
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree
+ */
+
+$color_gray_darker: #333;
+$color_gray_dark: #666;
+$color_gray: #999;
+$color_gray_light: #CCC;
+$color_gray_lighter: #eee;
+$color_gray_muted: #ededed;
+$color_gray_slate: #dedede;
+
+// Material
+$color_red: #e51c23;
+$color_pink: #e91e63;
+$color_purple: #9c27b0;
+$color_purple_deep: #673ab7;
+$color_indigo: #3f51b5;
+$color_blue: #5677fc;
+$color_blue_light: #03a9f4;
+$color_blue_lighter: #F4FBFF;
+$color_cyan: #00bcd4;
+$color_teal: #009688;
+$color_green: #259b24;
+$color_green_light: #8bc34a;
+$color_lime: #cddc39;
+$color_yellow: #ffeb3b;
+$color_amber: #ffc107;
+$color_orange: #ff9800;
+$color_orange_deep: #ff5722;
+$color_brown: #795548;
+$color_blue_grey: #607d8b;
+$color_white: #FFF;
+
+
+// Bootstrap colors
+$brand-primary: $color_blue !default;
+$brand-info: $color_blue_light !default;
+$brand-danger: $color_red !default;
+$brand-success: $color_green !default;
+$brand-warning: $color_amber !default;
+
+
+// Panels
+$color_panel_header_bg: #f0f0f0 !default;
+$color_panel_heading_text: $color_gray_darker !default;
+$color_panel_borders: darken($color_panel_header_bg, 10%) !default;
+$color_panel_shadow: darken(white, 5%) !default;
+
+
+
+$color_panel_subtabs_bg: #dee8f0 !default; //#e3ded6;
+$color_panel_subtabs_border: darken($color_panel_subtabs_bg, 10%) !default;
+$color_panel_subtabs_selected_border: $brand-primary;
+
+// Checkbox
+$color_checkbox_border: $color_gray;
+$color_checkbox_tick: $color_gray_muted;
+$color_checkbox_tick_hover: $color_gray_lighter;
+$color_checkbox_tick_active: $color_green_light;
+
+// Dropdown
+//Dropdown colors
+$color_dropdown_bg: $color_white;
+$color_dropdown_base: $color_blue_light;
+$color_dropdown_text: $color_gray_darker;
+$color_dropdown_caret_active: $color_blue;
+$color_dropdown_border: $color_gray_muted;

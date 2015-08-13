@@ -1,3 +1,14 @@
+<<<<<<< HEAD
+=======
+/**
+ * Copyright 2015, Symantec Corporation
+ * All rights reserved.
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree
+ */
+
+>>>>>>> c7d1017e86ca9ebcf90755b81da750fce22d9c2c
 .simple-toggle-wrap
 {
     &.btn
@@ -19,10 +30,20 @@
     {
         background: #FFF;
         border-style: dashed;
+<<<<<<< HEAD
+=======
+        &.state-inacive:after{
+            display: none;
+        }
+>>>>>>> c7d1017e86ca9ebcf90755b81da750fce22d9c2c
     }
 
     &.state-on
     {
+<<<<<<< HEAD
+=======
+        background: #FFF;
+>>>>>>> c7d1017e86ca9ebcf90755b81da750fce22d9c2c
         border-style: solid;
     }
 
@@ -37,6 +58,16 @@
         font-size:0.8em;
         transition: background-color .2s ease-in;
         margin-right: 5px;
+<<<<<<< HEAD
+=======
+        position: relative;
+        top: 1px;
+        line-height: 1;
+    }
+    .toggle-icon:after{
+        content: '\2713';
+        background: transparent;
+>>>>>>> c7d1017e86ca9ebcf90755b81da750fce22d9c2c
     }
     .text-message {
         margin-right: 5px;

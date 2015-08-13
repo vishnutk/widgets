@@ -1,2 +1,24 @@
+/**
+ * Copyright 2015, Symantec Corporation
+ * All rights reserved.
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree
+ */
+
+@import "dimensions";
+@import "colors";
+@import "mixins";
+@import "animations";
+@import "btn_async";
 @import "zs_text";
+<<<<<<< HEAD
 @import "zs_simple_toggle";
+=======
+@import "radio_tabs";
+@import "checkbox";
+@import "flip_card";
+@import "zs_simple_toggle";
+@import "table_fragment";
+@import "zs_dropdown";
+>>>>>>> c7d1017e86ca9ebcf90755b81da750fce22d9c2c

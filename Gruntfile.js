@@ -10,6 +10,19 @@ module.exports = function ( grunt ) {
     grunt.initConfig( {
 
         pkg: grunt.file.readJSON( 'package.json' ),
+        licenseHeaderLong: [ '/**',
+            ' * Copyright (C) <%= grunt.template.today("yyyy") %>, Symantec Corporation',
+            ' * All rights reserved.',
+            ' *',
+            ' * This source code is licensed under the MIT license found in the',
+            ' * LICENSE file in the root directory of this source tree',
+            ' */', '' ].join( '\n' ),
+
+        licenseHeaderShort: [ '/*!',
+            ' * Copyright (C) <%= grunt.template.today("yyyy") %>, Symantec Corporation',
+            ' * All rights reserved.',
+            ' * <%= pkg.name %> v<%= pkg.version %>',
+            ' */', '' ].join( '\n' ),
 
         jshint: {
             options: {
@@ -36,6 +49,9 @@ module.exports = function ( grunt ) {
                     src: [
                         '.tmp',
                         'dist/*',
+                        'docs',
+                        '.gen/*',
+                        'publish_docs',
                         '!dist/.git*'
                     ]
                 } ]
@@ -69,16 +85,31 @@ module.exports = function ( grunt ) {
         },
 
 
+        html2js: {
+            options: {
+                module: 'zeus.widgets.templates',
+                base: 'src',
+                singleModule: true
+            },
+            main: {
+                src: [ 'src/html/*.html' ],
+                dest: '.tmp/js/zeus-widgets.templates.js'
+            }
+        },
+
         concat: {
-          dist: {
-              src: [ 'src/js/*.js' ],
-              dest: '.tmp/js/zeus-widgets.js'
-          }
+            options: {
+                banner: '<%= licenseHeaderShort %>'
+            },
+            dist_js: {
+                src: [ 'src/js/index.js', 'src/js/*.js' ],
+                dest: '.tmp/js/zeus-widgets.js'
+            }
         },
 
         jscs: {
         src: [
-                'app/js/{,*/}*.js',
+                'src/js/{,*/}*.js',
                 'test/spec/{,*/}*.js'
             ],
             options: {
@@ -89,10 +120,7 @@ module.exports = function ( grunt ) {
 
         uglify: {
             options: {
-                banner: '/*! Copyright (C) <%= grunt.template.today("yyyy") %>. ' +
-            'ZeusJS \n' +
-            '<%= pkg.name %> - v<%= pkg.version %>.' +
-            '<%= process.env.BUILD_NUMBER %> */\n',
+                banner: '<%= licenseHeaderShort %>',
                 compress: {
                     drop_console: true
                 },
@@ -102,199 +130,214 @@ module.exports = function ( grunt ) {
             dist: {
               files: {
                 'dist/js/zeus-widgets.min.js': [
-                    'dist/js/zeus-widgets.js'
+                    '.tmp/js/zeus-widgets.js'
+                ],
+                'dist/js/zeus-widgets.templates.min.js': [
+                    '.tmp/js/zeus-widgets.templates.js'
                 ]
               }
             }
 
         },
 
-            // The following *-min tasks produce minified files in the dist folder
-            cssmin: {
-                options: {
-                    root: '.',
-                    keepSpecialComments: 0,
-                    banner: '/*! Copyright (C) <%= grunt.template.today("yyyy") %>. ' +
-                        'ZeusJS \n' +
-                        '<%= pkg.name %> - v<%= pkg.version %>.' +
-                        '<%= process.env.BUILD_NUMBER %> */\n'
-                },
-
-                target: {
-                    files: {
-                        'dist/css/zeus-widgets.min.css': [ '.tmp/css/*.css' ]
-                    }
-                }
+        // The following *-min tasks produce minified files in the dist folder
+        cssmin: {
+            options: {
+                root: '.',
+                keepSpecialComments: 0,
+                banner: '/*! Copyright (C) <%= grunt.template.today("yyyy") %>. ' +
+                    'Symantec Corporation \n' +
+                    '<%= pkg.name %> - v<%= pkg.version %>.' +
+                    '<%= process.env.BUILD_NUMBER %> */\n'
             },
 
-            // ng-annotate tries to make the code safe for minification automatically
-            // by using the Angular long form for dependency injection.
-            ngAnnotate: {
-                dist: {
-                    files: [ {
-                        expand: true,
-                        cwd: '.tmp/js',
-                        src: 'zeus-widgets.js',
-                        dest: 'dist/js'
-                    } ]
+            target: {
+                files: {
+                    'dist/css/zeus-widgets.min.css': [ 'dist/css/*.css' ]
                 }
-            },
+            }
+        },
 
-            ngdocs: {
-                options: {
-                    dest: 'docs',
-                    html5Mode: false,
-                    title: 'Zeus Widgets',
-                    startPage: '/api',
-                    editExample: false,
-                    styles: [
-                        'docs/css/zeus.css'
-                    ],
-                    scripts: [
-                        'docs/js/vendor.js',
-                        'docs/js/angular-animate.min.js',
-                        'docs/js/zeus-ui.js'
-                    ]
-                },
-                api: [
-                  'src/js/*.js'
+        // ng-annotate tries to make the code safe for minification automatically
+        // by using the Angular long form for dependency injection.
+        ngAnnotate: {
+            dist: {
+                files: [ {
+                    expand: true,
+                    cwd: '.tmp/js',
+                    src: '*.js',
+                    dest: '.tmp/js'
+                } ]
+            }
+        },
+
+        ngdocs: {
+            options: {
+                dest: 'docs',
+                html5Mode: false,
+                title: 'Zeus Widgets',
+                startPage: '/api',
+                editExample: false,
+                styles: [
+                    'externs/libs/bootstrap-3.1.1.min.css',
+                    'dist/css/zeus-widgets.css'
+                ],
+                scripts: [
+                    'externs/libs/jquery.js',
+                    'externs/libs/angular.js',
+                    'externs/libs/angular-animate.js',
+                    'externs/libs/ui-bootstrap-tpls.js',
+                    'dist/js/zeus-widgets.templates.js',
+                    'dist/js/zeus-widgets.js'
                 ]
             },
+            api: [
+              'src/js/*.js'
+            ]
+        },
 
-            sloc: {
-                'source-code': {
-                    files: {
-                        code: [
-                            'src/js/*.js',
-                            'src/sass/*.scss'
-                        ]
-                    }
-                },
-                tests: {
-                    files: {
-                        test: [
-                            'spec/**/*.js',
-                            'mock_views/*.html'
-                        ]
-                    }
+        sloc: {
+            'source-code': {
+                files: {
+                    code: [
+                        'src/js/*.js',
+                        'src/sass/*.scss'
+                    ]
                 }
             },
+            tests: {
+                files: {
+                    test: [
+                        'spec/**/*.js',
+                        'mock_views/*.html'
+                    ]
+                }
+            }
+        },
 
             // Copies remaining files to places other tasks can use
-            copy: {
+        copy: {
 
-
-                docs: {
-                    files: [
+            build: {
+                files: [
                     {
                         expand: true,
                         flatten: true,
-                        cwd: '.tmp/concat/scripts',
-                        dest: 'docs/js',
-                        src: [ '*.js' ]
+                        cwd: 'src/sass',
+                        dest: 'dist/sass',
+                        src: [ '*.scss' ]
                     },
                     {
                         expand: true,
                         flatten: true,
-                        cwd: 'dist/css',
-                        dest: 'docs/css',
+                        cwd: '.tmp/css',
+                        dest: 'dist/css',
                         src: [ '*.css' ]
-                    } ]
-                },
+                    },
+                    {
+                        expand: true,
+                        flatten: true,
+                        cwd: 'src/html',
+                        dest: 'dist/html',
+                        src: [ '*.html' ]
+                    },
+                    {
+                        expand: true,
+                        flatten: true,
+                        cwd: '.tmp/js',
+                        dest: 'dist/js',
+                        src: [ '*.js' ]
+                    }
 
-                build: {
-                    files: [
-                        {
-                            expand: true,
-                            flatten: true,
-                            cwd: 'src/sass',
-                            dest: 'dist/sass',
-                            src: [ '*.scss' ]
-                        },
-                        {
-                            expand: true,
-                            flatten: true,
-                            cwd: 'src/html',
-                            dest: 'dist/html',
-                            src: [ '*.html' ]
-                        }
+                ]
+            }
+
+        },
+
+
+        // Test settings
+        karma: {
+            unit: {
+                configFile: 'karma.conf.js',
+                singleRun: true
+            }
+        },
+
+        coveralls: {
+            options: {
+                debug: false,
+                coverageDir: '.gen/coverage',
+                dryRun: false,
+                force: true,
+                recursive: true
+            }
+        },
+
+
+        connect: {
+            options: {
+                port: 9000,
+                // Change this to '0.0.0.0' to access the server from outside.
+                hostname: 'localhost',
+                livereload: 35729
+            },
+            livereload: {
+                options: {
+                    open: true,
+                    base: [
+                        '.tmp',
+                        'src'
                     ]
                 }
-
             },
-
-
-            // Test settings
-            karma: {
-                unit: {
-                    configFile: 'karma.conf.js',
-                    singleRun: true
+            test: {
+                options: {
+                    port: 9001,
+                    base: [
+                        '.tmp',
+                        'test',
+                        'dist'
+                    ]
                 }
             },
-
-
-            connect: {
+            dist: {
                 options: {
-                    port: 9000,
-                    // Change this to '0.0.0.0' to access the server from outside.
-                    hostname: 'localhost',
-                    livereload: 35729
-                },
-                livereload: {
-                    options: {
-                        open: true,
-                        base: [
-                            '.tmp',
-                            'src'
-                        ]
-                    }
-                },
-                test: {
-                    options: {
-                        port: 9001,
-                        base: [
-                            '.tmp',
-                            'test',
-                            'dist'
-                        ]
-                    }
-                },
-                dist: {
-                    options: {
-                        base: 'dist'
-                    }
+                    base: 'dist'
                 }
             }
-        } );
+        }
+    } );
 
 
-        grunt.registerTask( 'lint', [
-            'jscs',
-            'jshint:all'
-        ] );
+    grunt.registerTask( 'lint', [
+        'jscs',
+        'jshint:all'
+    ] );
 
-        grunt.registerTask( 'test', [
-            'lint',
-            'jshint:test',
-            'karma'
-        ] );
+    grunt.registerTask( 'test', [
+        'jscs',
+        'jshint:test',
+        'karma'
+    ] );
 
-        grunt.registerTask( 'docs', [
-            'copy:docs',
-            'ngdocs'
-        ] );
+    grunt.registerTask( 'docs', [
+        'ngdocs'
+    ] );
 
-        grunt.registerTask( 'build', [
-            'test',
-            'clean:dist',
-            'sass',
-            'autoprefixer',
-            'concat',
-            'ngAnnotate',
-            'copy:build',
-            // 'docs',
-            'cssmin',
-            'uglify',
-            'sloc'
-        ] );
-    };
+    grunt.registerTask( 'build', [
+        'lint',
+        'clean',
+        'karma',
+        'sass',
+        'autoprefixer',
+        'html2js:main',
+        'concat',
+        'ngAnnotate',
+        'copy:build',
+        'cssmin',
+        'uglify',
+        'docs',
+        'sloc',
+        'coveralls'
+    ] );
+};
